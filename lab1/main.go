@@ -221,52 +221,41 @@ type FuelComposition struct {
 	Q        float64
 }
 
-// calculateComposition performs the fuel composition calculation for the first page
 func calculateComposition(hydrogen, carbon, sulfur, nitrogen, oxygen, ash, wet float64) string {
-	krs := (100 - wet) / 100
-	krg := (100 - wet - ash) / 100
+	krs := 100 / (100 - wet)
+	krg := 100 / (100 - wet - ash)
 
-	hydrogenS := hydrogen * krg
-	carbonS := carbon * krg
-	sulfurS := sulfur * krg
-	nitrogenS := nitrogen * krg
-	oxygenS := oxygen * krg
+	hydrogenS := hydrogen * krs
+	carbonS := carbon * krs
+	sulfurS := sulfur * krs
+	nitrogenS := nitrogen * krs
+	oxygenS := oxygen * krs
 	ashS := ash * krs
+
+	hydrogenG := hydrogen * krg
+	carbonG := carbon * krg
+	sulfurG := sulfur * krg
+	nitrogenG := nitrogen * krg
+	oxygenG := oxygen * krg
+
+	q := (339 * carbon + 1030 * hydrogen + 108.8 * (oxygen - sulfur) - 25 * wet) / 1000
+	qs := (q + 0.025 * wet) * 100 / (100 - wet)
+	qg := (q + 0.025 * wet) * 100 / (100 - wet - ash)
 
 	result := fmt.Sprintf(`
-Водень (H): %.2f %% 
-Вуглець (C): %.2f %% 
-Сірка (S): %.2f %% 
-Азот (N): %.2f %% 
-Кисень (O): %.2f %% 
-Зола (A): %.2f %% 
-`, hydrogenS, carbonS, sulfurS, nitrogenS, oxygenS, ashS)
+Водень (H): %.2f %% (суха), %.2f %% (горюча)
+Вуглець (C): %.2f %% (суха), %.2f %% (горюча)
+Сірка (S): %.2f %% (суха), %.2f %% (горюча)
+Азот (N): %.2f %% (суха), %.2f %% (горюча)
+Кисень (O): %.2f %% (суха), %.2f %% (горюча)
+Зола (A): %.2f %% (суха)
+
+Нижча теплота згорання (робоча): %.2f МДж/кг
+Нижча теплота згорання (суха): %.2f МДж/кг
+Нижча теплота згорання (горюча): %.2f МДж/кг
+`, hydrogenS, hydrogenG, carbonS, carbonG, sulfurS, sulfurG, nitrogenS, nitrogenG, oxygenS, oxygenG, ashS, q, qs, qg)
 
 	return result
-}
-
-func calculateCompositionPage2(hydrogen, carbon, sulfur, oxygen, ash, wet, vanadium, q float64) string {
-	krs := (100 - wet) / 100
-	krg := (100 - wet - ash) / 100
-
-	hydrogenS := hydrogen * krg
-	carbonS := carbon * krg
-	sulfurS := sulfur * krg
-	oxygenS := oxygen * krg
-	ashS := ash * krs
-	vanadiumS := vanadium * krs
-
-	result := q * (100 - wet - ash) / 100 - 0.025 * wet
-
-	return fmt.Sprintf(`
-Водень (H): %.2f %% 
-Вуглець (C): %.2f %% 
-Сірка (S): %.2f %% 
-Кисень (O): %.2f %% 
-Зола (A): %.2f %% 
-Ванадій (V): %.2f %% 
-
-Нижча теплота згорання: %.2f МДж/кг`, hydrogenS, carbonS, sulfurS, oxygenS, ashS, vanadiumS, result)
 }
 
 func handlerPage1(w http.ResponseWriter, r *http.Request) {
@@ -294,6 +283,30 @@ func handlerPage1(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	tpl.Execute(w, nil)
+}
+
+func calculateCompositionPage2(hydrogen, carbon, sulfur, oxygen, ash, wet, vanadium, q float64) string {
+	krs := (100 - wet) / 100
+	krg := (100 - wet - ash) / 100
+
+	hydrogenS := hydrogen * krg
+	carbonS := carbon * krg
+	sulfurS := sulfur * krg
+	oxygenS := oxygen * krg
+	ashS := ash * krs
+	vanadiumS := vanadium * krs
+
+	result := q * (100 - wet - ash) / 100 - 0.025 * wet
+
+	return fmt.Sprintf(`
+		Водень (H): %.2f %% 
+		Вуглець (C): %.2f %% 
+		Сірка (S): %.2f %% 
+		Кисень (O): %.2f %% 
+		Зола (A): %.2f %% 
+		Ванадій (V): %.2f %% 
+
+		Нижча теплота згорання: %.2f МДж/кг`, hydrogenS, carbonS, sulfurS, oxygenS, ashS, vanadiumS, result)
 }
 
 func handlerPage2(w http.ResponseWriter, r *http.Request) {
