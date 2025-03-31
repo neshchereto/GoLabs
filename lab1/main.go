@@ -83,7 +83,7 @@ var tpl = template.Must(template.New("page1").Parse(`
 </head>
 <body>
     <div class="container">
-        <h2>Калькулятор складу палива</h2>
+        <h2>Розрахунок складу сухої та горючої маси палива та нижчої теплоти згоряння для робочої, сухої та горючої маси за заданим складом компонентів палива</h2>
         <form method="post">
 			<input type="text" name="hydrogen" placeholder="Водень (H)" value="{{.Hydrogen}}">
 			<input type="text" name="carbon" placeholder="Вуглець (C)" value="{{.Carbon}}">
@@ -183,7 +183,7 @@ var tpl2 = template.Must(template.New("page2").Parse(`
 </head>
 <body>
     <div class="container">
-        <h2>Калькулятор складу палива</h2>
+        <h2>Розрахунок елементарного складу та нижчої теплоти згоряння мазуту на робочу масу для складу горючої маси мазуту</h2>
         <form method="post">
             <input type="text" name="hydrogen" placeholder="Водень (H)" value="{{.Hydrogen}}">
             <input type="text" name="carbon" placeholder="Вуглець (C)" value="{{.Carbon}}">
