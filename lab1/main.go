@@ -183,7 +183,7 @@ var tpl2 = template.Must(template.New("page2").Parse(`
 </head>
 <body>
     <div class="container">
-        <h2>Калькулятор складу палива (Ванадій)</h2>
+        <h2>Калькулятор складу палива</h2>
         <form method="post">
             <input type="text" name="hydrogen" placeholder="Водень (H)" value="{{.Hydrogen}}">
             <input type="text" name="carbon" placeholder="Вуглець (C)" value="{{.Carbon}}">
@@ -299,14 +299,14 @@ func calculateCompositionPage2(hydrogen, carbon, sulfur, oxygen, ash, wet, vanad
 	result := q * (100 - wet - ash) / 100 - 0.025 * wet
 
 	return fmt.Sprintf(`
-		Водень (H): %.2f %% 
-		Вуглець (C): %.2f %% 
-		Сірка (S): %.2f %% 
-		Кисень (O): %.2f %% 
-		Зола (A): %.2f %% 
-		Ванадій (V): %.2f %% 
+Водень (H): %.2f %% 
+Вуглець (C): %.2f %% 
+Сірка (S): %.2f %% 
+Кисень (O): %.2f %% 
+Зола (A): %.2f %% 
+Ванадій (V): %.2f %% 
 
-		Нижча теплота згорання: %.2f МДж/кг`, hydrogenS, carbonS, sulfurS, oxygenS, ashS, vanadiumS, result)
+Нижча теплота згорання: %.2f МДж/кг`, hydrogenS, carbonS, sulfurS, oxygenS, ashS, vanadiumS, result)
 }
 
 func handlerPage2(w http.ResponseWriter, r *http.Request) {
